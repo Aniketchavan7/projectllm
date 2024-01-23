@@ -3,20 +3,19 @@ from chat import chatbot
 
 app = Flask(__name__)
 
-
 @app.route("/")
-def hello():
-    return render_template('chat.html')
+def index():
+    return render_template('chat1.html')
 
-@app.route("/ask", methods=['POST'])
-def ask():
+@app.route("/ask", methods=["GET", "POST"])
+def chat():
+    if request.method == "POST":
+        message = str(request.form['messageText'])
+        return get_chat_response(message)
 
-    message = str(request.form['messageText'])
- 
-    bot_response = chatbot(message) 
-    
-    return jsonify({'status':'OK','answer':bot_response})
-
+def get_chat_response(text):
+    bot_response = chatbot(text)
+    return jsonify({'status': 'OK', 'answer': bot_response})
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
